@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust
+  labels:
+    app: locust
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust
+  template:
+    metadata:
+      labels:
+        app: locust
+    spec:
+      containers:
+      - name: kube-locust
+        image: wgleich/kube_locust:1
+        env:
+        - name: HOST_IP
+          value: "192.168.1.5"
+        volumeMounts:
+        - name: kube-config
+          mountPath: /locust
+      volumes:
+        - name: kube-config
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: kubelocust-config
